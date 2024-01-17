@@ -26,7 +26,6 @@ module.exports = () => {
         swSrc: "./src-sw.js",
         swDest: "sw.js",
       }),
-      new GenerateSW(),
       new WebpackPwaManifest({
         name: "Text Editor",
         short_name: "Editor",
