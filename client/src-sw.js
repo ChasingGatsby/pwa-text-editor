@@ -19,18 +19,6 @@ const pageCache = new CacheFirst({
   ],
 });
 
-const assetCache = new CacheFirst({
-  cacheName: "asset-cache",
-  plugins: [
-    new CacheableResponsePlugin({
-      statuses: [0, 200],
-    }),
-    new ExpirationPlugin({
-      maxAgeSeconds: 30 * 24 * 60 * 60,
-    }),
-  ],
-});
-
 warmStrategyCache({
   urls: ["/index.html", "/"],
   strategy: pageCache,
@@ -40,9 +28,19 @@ registerRoute(({ request }) => request.mode === "navigate", pageCache);
 
 // TODO: Implement asset caching
 registerRoute(
-  (({ request }) =>
+  ({ request }) =>
     request.destination === "script" ||
     request.destination === "style" ||
     request.destination === "image",
-  assetCache)
+  new CacheFirst({
+    cacheName: 'assets-cache',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxAgeSeconds: 30 * 24 * 60 * 60,
+      }),
+    ],
+  })
 );
